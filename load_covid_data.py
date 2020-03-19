@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+
 def load_individual_timeseries(name):
     base_url='https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series'
     url = f'{base_url}/time_series_19-covid-{name}.csv'
@@ -32,7 +33,8 @@ def load_individual_timeseries(name):
                    ])
     return df
 
-def load_data(drop_states=False, p_crit=.05, filter_n_days_100=None):
+
+def load_data_from_web(drop_states=False, p_crit=.05, filter_n_days_100=True):
     df = load_individual_timeseries('Confirmed')
     df = df.rename(columns={'cases': 'confirmed'})
     if drop_states:
@@ -77,3 +79,13 @@ def load_data(drop_states=False, p_crit=.05, filter_n_days_100=None):
         df = df.loc[lambda x: x.country.isin(countries)]
 
     return df
+
+
+def load_data_from_file(file_name='resources/data.csv'):
+    df = pd.read_csv(file_name)
+    return df
+
+
+def save_data(df, file_name='resources/data.csv'):
+    df.to_csv(file_name)
+
