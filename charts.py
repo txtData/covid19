@@ -8,7 +8,7 @@ import pandas as pd
 
 countries = ['Italy', 'Germany', 'US (total)', 'United Kingdom (total)']
 icus_per_country = [7580, 28000, 115500, 4360]
-icu_availability_ratio = .15
+icu_availability_ratio = .20
  
 #df = lcd.load_data_from_web()
 #lcd.save_data(df)
@@ -24,9 +24,12 @@ def case_plot():
     sns.set_palette(sns.hls_palette(4, l=.4, s=.8))
     fig, ax = plt.subplots(figsize=(12, 8))
     
+    longest_line = 0
     for country in countries:
         df_country = df.loc[(df.country == country) & (df.confirmed >= 100)]
         df_country.reset_index()['confirmed'].plot(label=country, ls='-', lw=2.5)
+        if df_country['deaths'].shape[0] > longest_line:
+            longest_line = df_country['deaths'].shape[0]
     
     x = np.linspace(0, plt.xlim()[1] - 1)
     ax.plot(x, 100 * (1.33) ** x, ls='--', color='k', label='33% daily growth', lw=1.5)
@@ -35,7 +38,7 @@ def case_plot():
            title='Exponential growth of reported COVID-19 cases',
            xlabel='Days from first 100 confirmed cases',
            ylabel='Confirmed cases (log scale)')
-    ax.set_xlim([0, 24])
+    ax.set_xlim([0, longest_line])
     ax.set_ylim([100, 100000])
     ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
     ax.legend(loc='lower right', frameon=False)
@@ -46,9 +49,12 @@ def death_plot():
     sns.set_palette(sns.hls_palette(4, l=.4, s=.8))
     fig, ax = plt.subplots(figsize=(12, 8))
     
+    longest_line = 0
     for country in countries:
         df_country = df.loc[(df.country == country) & (df.deaths >= 5)]
         df_country.reset_index()['deaths'].plot(label=country, ls='-', lw=2.5)
+        if df_country['deaths'].shape[0] > longest_line:
+            longest_line = df_country['deaths'].shape[0]
     
     x = np.linspace(0, plt.xlim()[1] - 1)
     ax.plot(x, 5 * (1.33) ** x, ls='--', color='k', label='33% daily growth', lw=1.5)
@@ -57,20 +63,24 @@ def death_plot():
            title='Total cumulative COVID-19 deaths by country',
            xlabel='Days from first 5 confirmed deaths',
            ylabel='Confirmed deaths (log scale)')
-    ax.set_xlim([0, 23])
+    ax.set_xlim([0, longest_line])
     ax.set_ylim([5, 10000])
     ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
     ax.legend(loc='lower right', frameon=False)
     sns.set()
 
 
-def create_dates(start_date, interval, length):
+def create_dates(start_date, step, length):
     date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
-    step = 2
     intervals = range(0,length,step)
     dates = []
     for i in intervals:
-        dates.append(date.strftime('%b %d'))
+        if (length<250):
+            dates.append(date.strftime('%b %d'))
+        elif (length<500):
+            dates.append(date.strftime('%b %d %Y'))
+        else:
+            dates.append(date.strftime('%b %Y'))
         date += datetime.timedelta(days=step)
     return dates, list(intervals)
         
@@ -114,8 +124,9 @@ def critical_plot():
     ax.set(yscale='log',
            title='Critical COVID-19 cases requiring intensive care units (ICUs) by country, estimated',
            ylabel='Estimated critical cases (log scale)')
-    ax.set_xlim([0, 0])
+
     ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    ax.set_xlim([0, 0])
     
     dates, ticks = create_dates(df_country['date'].iloc[0], 2, 31)
     ax.set_xticklabels(labels=dates)
@@ -124,8 +135,8 @@ def critical_plot():
     ax.legend(loc='lower right', frameon=False)
     sns.set()
  
-    
-case_plot()    
-death_plot()
-critical_plot()
+if __name__ == '__main__':    
+    case_plot()    
+    death_plot()
+    critical_plot()
     
