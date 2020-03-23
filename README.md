@@ -3,6 +3,7 @@ Charts and models related to the COVID-19 outbreak.
 
 The model used is the SIR model: https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#The_SIR_model
 
+The following charts were created on March 23, 2020.
 
 ![Growth](resources/growth.png)
 
