@@ -1,8 +1,0 @@
-numpy
-matplotlib
-pandas
-seaborn
-arviz
-pymc3
-requests
-

@@ -1,27 +1,14 @@
-import datetime
 import load_covid_data as lcd
+import helpers
 import matplotlib.pyplot as plt
 import matplotlib
 import seaborn as sns
 import numpy as np
 import pandas as pd
 
-countries = ['Italy', 'Germany', 'US (total)', 'United Kingdom (total)']
-icus_per_country = [7580, 28000, 115500, 4360]
-icu_availability_ratio = .20
- 
-#df = lcd.load_data_from_web()
-#lcd.save_data(df)
-df = lcd.load_data_from_file()
-print('Last data for date:', df['date'].iloc[-1])
-
-df = df[df['country'].isin(countries)]
-df['country'].replace({'US (total)': 'US', 'United Kingdom (total)': 'UK'}, inplace=True)
-countries = ['Italy', 'Germany', 'US', 'UK'] # redefining countries, now that we changed the data frame
-
 
 def case_plot():
-    sns.set_palette(sns.hls_palette(4, l=.4, s=.8))
+    sns.set_palette(sns.hls_palette(len(countries)+1, l=.4, s=.8))
     fig, ax = plt.subplots(figsize=(12, 8))
     
     longest_line = 0
@@ -46,7 +33,7 @@ def case_plot():
 
 
 def death_plot():
-    sns.set_palette(sns.hls_palette(4, l=.4, s=.8))
+    sns.set_palette(sns.hls_palette(len(countries)+1, l=.4, s=.8))
     fig, ax = plt.subplots(figsize=(12, 8))
     
     longest_line = 0
@@ -68,25 +55,11 @@ def death_plot():
     ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
     ax.legend(loc='lower right', frameon=False)
     sns.set()
-
-
-def create_dates(start_date, step, length):
-    date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
-    intervals = range(0,length,step)
-    dates = []
-    for i in intervals:
-        if (length<250):
-            dates.append(date.strftime('%b %d'))
-        elif (length<500):
-            dates.append(date.strftime('%b %d %Y'))
-        else:
-            dates.append(date.strftime('%b %Y'))
-        date += datetime.timedelta(days=step)
-    return dates, list(intervals)
         
     
-def critical_plot():
-    palette = sns.hls_palette(4, l=.4, s=.8)
+def critical_plot(df, p_crit=0.05):
+    df = df.assign(critical_estimate=df.confirmed*p_crit)
+    palette = sns.hls_palette(len(countries)+1, l=.4, s=.8)
     sns.set_palette(palette)
     fig, ax = plt.subplots(figsize=(12, 8))
     
@@ -112,7 +85,8 @@ def critical_plot():
         
         # plot estimates
         label = '_nolegend_'
-        if i==3: label = 'Prediction'
+        if i==len(countries)-1: 
+            label = 'Prediction'
         df_pred['prediction'].plot(label=label, color=palette[i], ls=':', lw=2.5)
     
     # plot available ICUs
@@ -128,15 +102,29 @@ def critical_plot():
     ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
     ax.set_xlim([0, 0])
     
-    dates, ticks = create_dates(df_country['date'].iloc[0], 2, 31)
+    dates, ticks = helpers.create_dates(df_country['date'].iloc[0], 2, 31)
     ax.set_xticklabels(labels=dates)
     ax.set_xticks(ticks=ticks)
     
     ax.legend(loc='lower right', frameon=False)
     sns.set()
  
+    
 if __name__ == '__main__':    
+    countries = ['Italy', 'Germany', 'US (total)', 'United Kingdom (total)', 'Spain']
+    icus_per_country = [7580, 28000, 115500, 4360]
+    icu_availability_ratio = .20
+ 
+    df = lcd.load_data_from_web()
+    lcd.save_data(df)
+    df = lcd.load_data_from_file()
+    print('Last data for date:', df['date'].iloc[-1])
+
+    df = df[df['country'].isin(countries)]
+    df['country'].replace({'US (total)': 'US', 'United Kingdom (total)': 'UK'}, inplace=True)
+    countries = ['Italy', 'Germany', 'US', 'UK'] # redefining countries, now that we changed the data frame
+    
     case_plot()    
     death_plot()
-    critical_plot()
+    critical_plot(df)
     
