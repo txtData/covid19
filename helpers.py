@@ -1,5 +1,5 @@
 import numpy as np
-import sir_modell as m
+import sir_model as m
 import datetime
 
 def create_dates(start_date, step, length):

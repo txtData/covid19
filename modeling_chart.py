@@ -3,7 +3,7 @@ import helpers
 import datetime
 import matplotlib.pyplot as plt
 import seaborn as sns
-import sir_modell as sir
+import sir_model as sir
 
 # If true, new data is downloaded, if false the last downloaded data is used.
 update_data = False 
