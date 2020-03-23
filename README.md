@@ -1,4 +1,4 @@
-# covid19
+# COVID-19
 Charts and models related to the COVID-19 outbreak.
 
 The model used is the SIR model: https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#The_SIR_model
