@@ -2,6 +2,28 @@ import numpy as np
 import sir_model as m
 import datetime
 
+def print_growth_numbers(countries, df, p_crit=0.05):
+    print('Country         Weekly  3-days  Daily       Week-before')
+    for i, country in enumerate(countries):
+        df_country = df.loc[(df.country == country)]
+        today = df_country.confirmed.iloc[-1]
+        yesterday = df_country.confirmed.iloc[-2]
+        minus3 = df_country.confirmed.iloc[-4]  
+        minus7 = df_country.confirmed.iloc[-8] 
+        minus14 = df_country.confirmed.iloc[-15] 
+        
+        inc_1day   = today / yesterday
+        inc_3days  = today / minus3
+        inc_weekly = today / minus7
+        inc_week_before = minus7 / minus14
+        
+        inc_3days_per_day  = inc_3days**(1/3)
+        inc_weekly_per_day = inc_weekly**(1/7)
+        inc_wb_per_day = inc_week_before**(1/7)
+        
+        print(f'{country:15}\t{inc_weekly_per_day:.2f}\t{inc_3days_per_day:.2f}\t{inc_1day:.2f}\t\t{inc_wb_per_day:.2f}')
+        
+
 def create_dates(start_date, step, length):
     date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
     intervals = range(0,length,step)

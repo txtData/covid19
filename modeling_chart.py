@@ -52,11 +52,10 @@ df = df.reset_index(drop=True)
 df = df.drop(columns=['country', 'state', 'days_since_100'])
 
 # Making sure columns confirm to SIR
-df = df.rename(columns={'recovered': 'recovered_'})
+recovered = 0 # fixing the fact that we have no info on recovered.
 df = df.assign(susceptible = population - df.confirmed)
-df = df.assign(infected = df.confirmed - df.recovered_)
-df = df.assign(recovered = df.recovered_)
-df = df.drop(columns=['recovered_'])
+df = df.assign(infected = df.confirmed - recovered)
+df = df.assign(recovered = recovered)
 
 date = df['date'].iloc[-1]
 last_susceptible_count = df['susceptible'].iloc[-1]

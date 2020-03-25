@@ -88,6 +88,7 @@ def critical_plot(df, p_crit=0.05):
         if i==len(countries)-1: 
             label = 'Prediction'
         df_pred['prediction'].plot(label=label, color=palette[i], ls=':', lw=2.5)
+    print()
     
     # plot available ICUs
     for i, icus in enumerate(icus_per_country):
@@ -100,7 +101,7 @@ def critical_plot(df, p_crit=0.05):
            ylabel='Estimated critical cases (log scale)')
 
     ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
-    ax.set_xlim([0, 0])
+    ax.set_xlim([0, 1])
     
     dates, ticks = helpers.create_dates(df_country['date'].iloc[0], 2, 31)
     ax.set_xticklabels(labels=dates)
@@ -111,7 +112,7 @@ def critical_plot(df, p_crit=0.05):
  
     
 if __name__ == '__main__':    
-    countries = ['Italy', 'Germany', 'US (total)', 'United Kingdom (total)', 'Spain']
+    countries = ['Italy', 'Germany', 'US', 'United Kingdom']
     icus_per_country = [7580, 28000, 115500, 4360]
     icu_availability_ratio = .20
  
@@ -121,10 +122,8 @@ if __name__ == '__main__':
     print('Last data for date:', df['date'].iloc[-1])
 
     df = df[df['country'].isin(countries)]
-    df['country'].replace({'US (total)': 'US', 'United Kingdom (total)': 'UK'}, inplace=True)
-    countries = ['Italy', 'Germany', 'US', 'UK'] # redefining countries, now that we changed the data frame
     
-    case_plot()    
+    helpers.print_growth_numbers(countries,df)
+    case_plot()
     death_plot()
     critical_plot(df)
-    
