@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 
+def add_newly_infected(df):
+    df['newly_infected'] = df['confirmed'] - df['confirmed'].shift(1)
+    
 def load_data_from_web():
     df = load_individual_timeseries('confirmed')
     df = df.rename(columns={'cases': 'confirmed'})
