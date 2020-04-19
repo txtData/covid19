@@ -36,20 +36,23 @@ def new_infections_plot(df):
     lcd.add_newly_infected(df)
     df['rolling_new'] = df['newly_infected'].rolling(5).mean()
     
-    countries = ['Italy', 'Germany', 'United Kingdom']
-    palette = sns.hls_palette(len(countries)+1, l=.4, s=.8)
+    countries = ['Germany', 'Italy', 'United Kingdom']
+    palette = sns.hls_palette(len(countries), l=.4, s=.8)
     sns.set_palette(palette)
     fig, ax = plt.subplots(figsize=(12, 8))
     
     longest_line = 0
     for country in countries:
-        df_country = df.loc[(df.country == country) & (df.date>='2020-03-01')]
-        df_country.reset_index()['rolling_new'].plot(label=country, ls='-', lw=2.5)
+        df_country = df.loc[(df.country == country) & (df.date>='2020-03-01')] 
+        df_country.reset_index()['rolling_new'].plot(label=country+' (smoothed)', ls='-', lw=2.5)
         if df_country['deaths'].shape[0] > longest_line:
             longest_line = df_country['deaths'].shape[0]
+    for country in countries:
+        df_country = df.loc[(df.country == country) & (df.date>='2020-03-01')]
+        df_country.reset_index()['newly_infected'].plot(label=country, ls=':', lw=1.0)   
             
-    plt.axvline(x=21, ls='--', color=palette[1], label='Lockdown Germany')
-    plt.axvline(x=35, ls=':', color=palette[1], label='2 weeks after lockdown')
+    plt.axvline(x=21, ls='--', color=palette[0], label='Lockdown Germany')
+    plt.axvline(x=35, ls=':', color=palette[0], label='2 weeks after lockdown')
     
     ax.set(title='Daily new infections of COVID-19 cases',
            xlabel='Time',

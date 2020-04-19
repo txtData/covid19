@@ -13636,7 +13636,7 @@ date,country,state,type,confirmed,days_since_100,deaths
 2020-04-13,US,,confirmed,580619,41.0,23528
 2020-04-14,US,,confirmed,607670,42.0,25831
 2020-04-15,US,,confirmed,636350,43.0,28325
-2020-04-16,US,,confirmed,667801,44.0,32916
+2020-04-16,US,,confirmed,667592,44.0,32916
 2020-04-17,US,,confirmed,699706,45.0,36773
 2020-04-18,US,,confirmed,732197,46.0,38664
 2020-01-22,Uzbekistan,,confirmed,0,-66.0,0
