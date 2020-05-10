@@ -5,8 +5,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import sir_model as sir
 
+# The model used is the SIR model: https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#The_SIR_model
+
 # If true, new data is downloaded, if false the last downloaded data is used.
-update_data = False 
+update_data = True
 
 predict_days = 230
 truncate_infected = 2000
@@ -20,11 +22,13 @@ critical_ratio = .05
 icus = 28000
 icu_availability_ratio = .20
 
+
 def increase_date(date):
     date = datetime.datetime.strptime(date, '%Y-%m-%d')
     date += datetime.timedelta(days=1)
     return date.strftime('%Y-%m-%d')
-   
+
+
 def create_row(date, s, i, r):
     line =[
         date,
@@ -96,7 +100,7 @@ icus_max = icus_available * 5
 ax.axhline(icus_available, ls='-.', label='Available ICUs', lw=2.5)
 ax.axhline(icus_max, ls=':', label='Available ICUs * 5', lw=2.5)
 
-# configue axes
+# configure axes
 ax.set(yscale='log',
            title='Predicted active COVID-19 cases at a given time for Germany / intensive care unit (ICU) capacity',
            ylabel='Estimated cases (log scale)')

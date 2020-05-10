@@ -2,15 +2,17 @@ import numpy as np
 import sir_model as m
 import datetime
 
-def print_growth_numbers(countries, df, p_crit=0.05):
-    print('Country         Weekly  3-days  Daily       Week-before')
+def print_growth_numbers(countries, df):
+    df['newly_infected'] = df['confirmed'] - df['confirmed'].shift(1)
+    print('\nGrowth of infections for different time periods:')
+    print('Country         This Week     Last 3 days   Today         Last week')
     for i, country in enumerate(countries):
         df_country = df.loc[(df.country == country)]
-        today = df_country.confirmed.iloc[-1]
-        yesterday = df_country.confirmed.iloc[-2]
-        minus3 = df_country.confirmed.iloc[-4]  
-        minus7 = df_country.confirmed.iloc[-8] 
-        minus14 = df_country.confirmed.iloc[-15] 
+        today = df_country.newly_infected.iloc[-1]
+        yesterday = df_country.newly_infected.iloc[-2]
+        minus3 = df_country.newly_infected.iloc[-4]
+        minus7 = df_country .newly_infected.iloc[-8]
+        minus14 = df_country.newly_infected.iloc[-15]
         
         inc_1day   = today / yesterday
         inc_3days  = today / minus3
@@ -21,7 +23,7 @@ def print_growth_numbers(countries, df, p_crit=0.05):
         inc_weekly_per_day = inc_weekly**(1/7)
         inc_wb_per_day = inc_week_before**(1/7)
         
-        print(f'{country:15}\t{inc_weekly_per_day:.2f}\t{inc_3days_per_day:.2f}\t{inc_1day:.2f}\t\t{inc_wb_per_day:.2f}')
+        print(f'{country:15} {inc_weekly_per_day:.2f}          {inc_3days_per_day:.2f}          {inc_1day:.2f}          {inc_wb_per_day:.2f}')
         
 
 def create_dates(start_date, step, length):

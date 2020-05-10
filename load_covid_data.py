@@ -3,6 +3,9 @@ import numpy as np
 
 def add_newly_infected(df):
     df['newly_infected'] = df['confirmed'] - df['confirmed'].shift(1)
+
+def add_new_deaths(df):
+    df['new_deaths'] = df['deaths'] - df['deaths'].shift(1)
     
 def load_data_from_web():
     df = load_individual_timeseries('confirmed')
